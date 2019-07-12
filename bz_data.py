@@ -2,6 +2,7 @@ import argparse
 import bugzilla
 import matplotlib.pyplot as plt
 import sys
+import textwrap
 import yaml
 
 from cached_property import cached_property
@@ -81,7 +82,7 @@ class BugzillaData:
             ax.add_artist(AnchoredText(self.product, loc=1))
         plt.tight_layout()
         if save:
-            plt.savefig("{}.png")
+            plt.savefig("{}.png".format(plot_style))
         plt.show()
 
 
@@ -95,7 +96,7 @@ def main():
         "-p", "--plot", type=str, default="component",
         help=(
             "Plot bar chart for BZs found via <query> according to one of: "
-            "[component, qa_contact]"
+            "[component, qa_contact, assigned_to, creator]"
         )
     )
     parser.add_argument(
@@ -106,9 +107,32 @@ def main():
         "--save", action="store_true", default=False,
         help="Save the plot"
     )
+    parser.add_argument(
+        "--output", action="store_true", default=False,
+        help="Output bugzilla data from query to stdout"
+    )
     args = parser.parse_args()
     # instantiate object
     bz_data = BugzillaData(args.query, args.url)
+    # print out info if necessary
+    if args.output:
+        for bug in bz_data.bugs:
+            bug_string = """
+                BZ {bug_id}:
+                    reported_by: {creator}
+                    summary: {summary}
+                    status: {status}
+                    qa_contact: {qa_contact}
+                    assignee: {assigned_to}
+            """.format(
+                bug_id=bug.id,
+                creator=getattr(bug, "creator", ""),
+                summary=getattr(bug, "summary", ""),
+                status=getattr(bug, "status", ""),
+                qa_contact=getattr(bug, "qa_contact", ""),
+                assigned_to=getattr(bug, "assigned_to", "")
+            )
+            print(textwrap.dedent(bug_string))
     # generate the plot
     bz_data.generate_plot(args.plot, save=args.save)
 
