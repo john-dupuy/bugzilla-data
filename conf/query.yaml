@@ -1,0 +1,30 @@
+- query:
+    product:
+        - Red Hat CloudForms Management Engine
+    status:
+        - NEW
+        - ON_QA
+    include_fields:
+        - id
+        - summary
+        - description
+        - status
+        - qa_contact
+        - component
+#    qa_contact:
+#        - mshriver@redhat.com
+#        - jdupuy@redhat.com
+#- query:
+#    product:
+#        - Red Hat CloudForms Management Engine
+#    status:
+#        - NEW
+#    include_fields:
+#        - id
+#        - summary
+#        - description
+#        - status
+#        - qa_contact
+#        - component
+#    qa_contact:
+#        - jdupuy@redhat.com
