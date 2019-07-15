@@ -12,13 +12,14 @@ Getting started
 ---------------
 
 The basics of using this tool is as simple as,
-1) Creating and activating a virtual environment
+1) Creating and activating a python 3 virtual environment
 2) `pip install -r requirements.txt`
 3) Running `python bz_data.py`
   
 The allowed parameters to `bz_data.py`  are: 
 ```
 usage: bz_data.py [-h] [-q QUERY] [-p PLOT] [-u URL] [--save] [--output]
+                  [--login] [--credential_file CREDENTIAL_FILE]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -31,6 +32,13 @@ optional arguments:
   --save                Save the plot (default: False)
   --output              Output bugzilla data from query to stdout (default:
                         False)
+  --login               Login to Bugzilla before making query. Required to use
+                        e.g. savedsearch and to get some hidden fields.
+                        (default: False)
+  --credential_file CREDENTIAL_FILE
+                        Path to credential yaml file (default:
+                        conf/credentials.yaml)
+
 ```
 To effectively use this tool, you must define meaningful queries in `conf/query.yaml`. 
 
@@ -59,6 +67,7 @@ You can define
         - qa_contact
         - creator
         - assigned_to
+        - version
     reporter:
         - <email1>
         - <email2>
@@ -67,4 +76,25 @@ You can define
  You can also search by `qa_contact` or `assigned_to` and then generate plots according to
  these users. More information about the queries can be found at: 
  https://github.com/python-bugzilla/python-bugzilla,
-as this is the API that is used for bugzilla queries. 
+as this is the API that is used for bugzilla queries. Note that the `include_fields` list is
+not necessary, and can be commented out if you run into attribute errors in the program call.
+It can speed up your query if you're dealing with a large number of BZs, since `python-bugzilla` 
+will only fetch those specific fields.
+
+**Another neat feature** of `python-bugzilla` is the ability to login to Bugzilla and use
+a search saved under your login rather than formulating your own query. To do so, create a 
+credentials file in `conf/credentials.yaml`, with the following content:
+```yaml,
+- login_info:
+    username: <your_bz_username>
+    password: <your_bz_password>
+```
+For the query, you can have the following in `conf/query.yaml`:
+```yaml,
+- query:
+    savedsearch: My Bugs # just an example, can be any name you want
+```
+Then run the script passing the `--login` so the script knows that a login is required. 
+```
+python bz_data.py --login
+```
