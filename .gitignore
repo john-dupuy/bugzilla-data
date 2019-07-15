@@ -1,2 +1,4 @@
 .venv
 conf/focus_areas.yaml
+conf/credentials.yaml
+conf/query*.yaml
