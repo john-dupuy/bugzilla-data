@@ -151,7 +151,7 @@ def main():
     )
     parser.add_argument(
         "--login", action="store_true", default=False,
-        help="Login to Bugzilla before making query. Required to use e.g. savedsearch and to get"
+        help="Login to Bugzilla before making query. Required to use e.g. savedsearch and to get "
              "some hidden fields."
     )
     parser.add_argument(

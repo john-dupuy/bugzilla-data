@@ -33,7 +33,7 @@ optional arguments:
   --output              Output bugzilla data from query to stdout (default:
                         False)
   --login               Login to Bugzilla before making query. Required to use
-                        e.g. savedsearch and to getsome hidden fields.
+                        e.g. savedsearch and to get some hidden fields.
                         (default: False)
   --credential_file CREDENTIAL_FILE
                         Path to credential yaml file (default:
