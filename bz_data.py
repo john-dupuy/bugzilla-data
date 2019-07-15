@@ -95,7 +95,7 @@ def main():
     parser.add_argument(
         "-p", "--plot", type=str, default="component",
         help=(
-            "Plot bar chart for BZs found via <query> according to one of: "
+            "Plot bar chart for BZs found via <query> sorted according to one of: "
             "[component, qa_contact, assigned_to, creator]"
         )
     )
