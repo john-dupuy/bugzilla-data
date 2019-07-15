@@ -92,7 +92,7 @@ credentials file in `conf/credentials.yaml`, with the following content:
 For the query, you can have the following in `conf/query.yaml`:
 ```yaml,
 - query:
-    savedsearch: My Bugs # just an example, can be any name you want
+    savedsearch: My Bugs # just an example, can be the name of any search defined in your Bugzilla 
 ```
 Then run the script passing the `--login` so the script knows that a login is required. 
 ```
