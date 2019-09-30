@@ -64,17 +64,15 @@ class BugzillaData:
             with self.logged_into_bugzilla():
                 if self.queries:
                     for query in self.queries:
-                        print(query)
-                        bugs.extend(self.bzapi.query(query))
+                        bugs.extend(self.bzapi.query(self.bzapi.build_query(**query)))
                 else:
-                    bugs.extend(self.bzapi.query(self.query))
+                    bugs.extend(self.bzapi.query(self.bzapi.build_query(**self.query)))
         else:
             if self.queries:
                 for query in self.queries:
-                    print(query)
-                    bugs.extend(self.bzapi.query(query))
+                    bugs.extend(self.bzapi.query(self.bzapi.build_query(**query)))
             else:
-                bugs.extend(self.bzapi.query(self.query))
+                bugs.extend(self.bzapi.query(self.bzapi.build_query(**self.query)))
         return bugs
 
     @property
@@ -150,6 +148,10 @@ def main():
         help="Output bugzilla data from query to stdout"
     )
     parser.add_argument(
+        "--noplot", action="store_true", default=False,
+        help="Do not generate any plot"
+    )
+    parser.add_argument(
         "--login", action="store_true", default=False,
         help="Login to Bugzilla before making query. Required to use e.g. savedsearch and to get "
              "some hidden fields."
@@ -159,6 +161,7 @@ def main():
         help="Path to credential yaml file"
     )
     args = parser.parse_args()
+    args.output = True if args.noplot else args.output
     # instantiate object
     bz_data = BugzillaData(
         args.query,
@@ -177,17 +180,20 @@ def main():
                     status: {status}
                     qa_contact: {qa_contact}
                     assignee: {assigned_to}
+                    fixed_in: {fixed_in}
             """.format(
                 bug_id=bug.id,
                 creator=getattr(bug, "creator", ""),
                 summary=getattr(bug, "summary", ""),
                 status=getattr(bug, "status", ""),
                 qa_contact=getattr(bug, "qa_contact", ""),
-                assigned_to=getattr(bug, "assigned_to", "")
+                assigned_to=getattr(bug, "assigned_to", ""),
+                fixed_in=getattr(bug, "fixed_in", "")
             )
             print(textwrap.dedent(bug_string))
     # generate the plot
-    bz_data.generate_plot(save=args.save)
+    if not args.noplot:
+        bz_data.generate_plot(save=args.save)
 
 
 if __name__ == "__main__":
