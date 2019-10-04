@@ -13,7 +13,7 @@ Getting started
 
 The basics of using this tool is as simple as,
 1) Creating and activating a python 3 virtual environment
-2) `pip install -r requirements.txt`
+2) `pip install -e .`
 3) Running `python scripts/make_plot.py`
 
 The allowed parameters to `make_plot.py`  are:
