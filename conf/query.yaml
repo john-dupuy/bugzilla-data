@@ -1,0 +1,12 @@
+- query:
+    product:
+        - Red Hat CloudForms Management Engine
+    status:
+        - NEW
+    include_fields:
+        - id
+        - summary
+        - description
+        - status
+        - qa_contact
+        - component

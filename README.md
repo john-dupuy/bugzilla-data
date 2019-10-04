@@ -96,5 +96,5 @@ For the query, you can have the following in `conf/query.yaml`:
 ```
 Then run the script passing the `--login` so the script knows that a login is required.
 ```
-python make_plot.py --login
+python scripts/make_plot.py --login
 ```
