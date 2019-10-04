@@ -1,4 +1,10 @@
+AUTHORS
+bugzilla_data/conf/focus_areas.yaml
+bugzilla_data/conf/credentials.yaml
+bugzilla_data/conf/query*.yaml
+*__pycache__/
+build
+ChangeLog
+*.egg-info
+*.eggs
 .venv
-conf/focus_areas.yaml
-conf/credentials.yaml
-conf/query*.yaml
