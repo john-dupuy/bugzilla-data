@@ -4,6 +4,7 @@ conf/credentials.yaml
 conf/query*.yaml
 !conf/query.yaml
 *__pycache__/
+dist/
 build
 ChangeLog
 *.egg-info
