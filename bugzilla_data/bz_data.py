@@ -4,11 +4,15 @@ from contextlib import contextmanager
 from itertools import chain
 
 import bugzilla
+import matplotlib
 import matplotlib.pyplot as plt
 import yaml
 from bugzilla.transport import BugzillaError
 from cached_property import cached_property
 from matplotlib.offsetbox import AnchoredText
+
+# requires PyQt5
+matplotlib.use("Qt5Agg")
 
 
 class BugzillaData:
