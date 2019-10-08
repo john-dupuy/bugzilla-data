@@ -1,5 +1,4 @@
 import argparse
-import textwrap
 
 from bugzilla_data import BugzillaData
 
@@ -31,6 +30,9 @@ def get_args():
         "--noplot", action="store_true", default=False, help="Do not generate any plot"
     )
     parser.add_argument(
+        "--report", action="store_true", default=False, help="Generate a bz yaml file report"
+    )
+    parser.add_argument(
         "--login",
         action="store_true",
         default=False,
@@ -55,25 +57,9 @@ def main(args=None):
     )
     # print out info if necessary
     if args.output:
-        for bug in bz_data.bugs:
-            bug_string = """
-                BZ {bug_id}:
-                    reported_by: {creator}
-                    summary: {summary}
-                    status: {status}
-                    qa_contact: {qa_contact}
-                    assignee: {assigned_to}
-                    fixed_in: {fixed_in}
-            """.format(
-                bug_id=bug.id,
-                creator=getattr(bug, "creator", ""),
-                summary=getattr(bug, "summary", ""),
-                status=getattr(bug, "status", ""),
-                qa_contact=getattr(bug, "qa_contact", ""),
-                assigned_to=getattr(bug, "assigned_to", ""),
-                fixed_in=getattr(bug, "fixed_in", ""),
-            )
-            print(textwrap.dedent(bug_string))
+        print(bz_data.generate_output())
+    if args.report:
+        bz_data.generate_report()
     # generate the plot
     if not args.noplot:
         bz_data.generate_plot(save=args.save)

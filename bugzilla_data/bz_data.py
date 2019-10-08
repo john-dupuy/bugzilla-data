@@ -1,4 +1,5 @@
 import sys
+import textwrap
 from contextlib import contextmanager
 from itertools import chain
 
@@ -17,7 +18,7 @@ class BugzillaData:
         self.query_file = query_file
         self.bzapi = bugzilla.Bugzilla(url)
         self.plot_style = plot_style
-        self.login_required = kwargs.get("login")
+        self.login_required = kwargs.get("login", False)
         self.credential_file = kwargs.get("credential_file")
         self.query = None
         self.queries = None
@@ -34,9 +35,12 @@ class BugzillaData:
             sys.exit(1)
         # parse login info, if there is any
         try:
-            with open(self.credential_file, "r") as stream:
-                creds = yaml.load(stream, Loader=yaml.FullLoader)[0]
-            self.creds = creds.get("login_info")
+            if self.login_required:
+                with open(self.credential_file, "r") as stream:
+                    creds = yaml.load(stream, Loader=yaml.FullLoader)[0]
+                self.creds = creds.get("login_info")
+            else:
+                self.creds = None
         except IOError:
             self.creds = None
 
@@ -113,3 +117,40 @@ class BugzillaData:
         if save:
             plt.savefig("{}.png".format(self.plot_style))
         plt.show()
+
+    def generate_output(self):
+        bug_strings = []
+        for bug in self.bugs:
+            bug_strings.append(
+                """
+                BZ {bug_id}:
+                    reported_by: {creator}
+                    summary: {summary}
+                    status: {status}
+                    qa_contact: {qa_contact}
+                    assignee: {assigned_to}
+                    fixed_in: {fixed_in}
+            """.format(
+                    bug_id=bug.id,
+                    creator=getattr(bug, "creator", ""),
+                    summary=getattr(bug, "summary", ""),
+                    status=getattr(bug, "status", ""),
+                    qa_contact=getattr(bug, "qa_contact", ""),
+                    assigned_to=getattr(bug, "assigned_to", ""),
+                    fixed_in=getattr(bug, "fixed_in", ""),
+                )
+            )
+        return textwrap.dedent("".join(bug_strings))
+
+    def get_bug_info(self):
+        for bug in self.bugs:
+            # get rid of bugzilla object in dict repr
+            bug.__dict__.pop("bugzilla")
+        return [{bug.id: bug.__dict__} for bug in self.bugs]
+
+    def generate_report(self, filename="bz-report.yaml"):
+        """ Save a report on BZs to a yaml file """
+        info = self.get_bug_info()
+        with open(filename, "w") as outfile:
+            yaml.dump(info, outfile, default_flow_style=False)
+        return
