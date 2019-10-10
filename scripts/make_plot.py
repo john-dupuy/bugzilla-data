@@ -1,6 +1,32 @@
 import argparse
 
-from bugzilla_data import BugzillaData
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.offsetbox import AnchoredText
+
+from bugzilla_data import BugzillaData as VanillaBugzillaData
+
+# requires PyQt5
+matplotlib.use("Qt5Agg")
+
+
+class BugzillaData(VanillaBugzillaData):
+    """ Inherit from base BugzillaData class to include plotting """
+
+    def generate_plot(self, save=False):
+        xvals, sorted_counts = self.get_plot_data()
+        # create the figure
+        fig, ax = plt.subplots()
+        ax.bar(xvals, [s[1] for s in sorted_counts], align="center")
+        plt.xticks(xvals, [s[0] for s in sorted_counts], rotation="vertical")
+        plt.ylabel("BZ Count")
+        plt.title(self.title)
+        if self.product:
+            ax.add_artist(AnchoredText(self.product, loc=1))
+        plt.tight_layout()
+        if save:
+            plt.savefig("{}.png".format(self.plot_style))
+        plt.show()
 
 
 def get_args():
