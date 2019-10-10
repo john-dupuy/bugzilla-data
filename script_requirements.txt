@@ -1,0 +1,5 @@
+# additional requirements required for the plotting scripts
+kiwisolver
+matplotlib
+numpy
+PyQt5

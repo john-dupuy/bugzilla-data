@@ -4,15 +4,9 @@ from contextlib import contextmanager
 from itertools import chain
 
 import bugzilla
-import matplotlib
-import matplotlib.pyplot as plt
 import yaml
 from bugzilla.transport import BugzillaError
 from cached_property import cached_property
-from matplotlib.offsetbox import AnchoredText
-
-# requires PyQt5
-matplotlib.use("Qt5Agg")
 
 
 class BugzillaData:
@@ -106,21 +100,6 @@ class BugzillaData:
         sorted_counts = sorted(bz_counts.items(), key=lambda item: item[1], reverse=True)
         xvals = range(len(sorted_counts))
         return xvals, sorted_counts
-
-    def generate_plot(self, save=False):
-        xvals, sorted_counts = self.get_plot_data()
-        # create the figure
-        fig, ax = plt.subplots()
-        ax.bar(xvals, [s[1] for s in sorted_counts], align="center")
-        plt.xticks(xvals, [s[0] for s in sorted_counts], rotation="vertical")
-        plt.ylabel("BZ Count")
-        plt.title(self.title)
-        if self.product:
-            ax.add_artist(AnchoredText(self.product, loc=1))
-        plt.tight_layout()
-        if save:
-            plt.savefig("{}.png".format(self.plot_style))
-        plt.show()
 
     def generate_output(self):
         bug_strings = []
