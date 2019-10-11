@@ -17,6 +17,7 @@ class BugzillaData:
         self.bzapi = bugzilla.Bugzilla(url)
         self.plot_style = plot_style
         self.login_required = kwargs.get("login", False)
+        self.creds = kwargs.get("credentials")
         self.credential_file = kwargs.get("credential_file")
         self.query = None
         self.queries = None
@@ -33,14 +34,12 @@ class BugzillaData:
             sys.exit(1)
         # parse login info, if there is any
         try:
-            if self.login_required:
+            if not self.creds and self.login_required:
                 with open(self.credential_file, "r") as stream:
                     creds = yaml.load(stream, Loader=yaml.FullLoader)[0]
                 self.creds = creds.get("login_info")
-            else:
-                self.creds = None
         except IOError:
-            self.creds = None
+            print("IOError: Credential file not present at {}".format(self.credential_file))
 
     @contextmanager
     def logged_into_bugzilla(self):
